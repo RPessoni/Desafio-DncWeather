@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>DncWeather</title>
+</head>
+<body>
+   <header>
+        <div id="cabecalho">
+           <div  id="dncWeather">
+             <h1>DncWeather</h1>
+           </div>
+           <div id="menu">
+              <ul>
+                <li>Endereços</li>
+                <li>Previsão do Tempo</li>
+              </ul>
+           </div>
+        </div>
+  </header>
+
+  <div id="contander" >
+      <div id="conteudo">
+        <h1>
+          Descubra Mais com Precisão: <br>
+           Previsões do Tempo e endereços <br>
+           em tempo real.
+          </h1>
+      </div>  
+      <div id="img">
+        <img src="./tempo.svg" alt=""  >
+      </div>
+  </div>
+<div id ="formulario">
+  <form action="">
+    <label for="nome">Primeiro Nome: <br></label><br>
+    <input type="text" id="nome" placeholder="Insira seu primeiro nome:" required><br><br>
+
+    <label for="mail">E-mail: <br></label><br>
+    <input type="email" id="mail" placeholder="Insira seu e-mail:" required><br><br>
+
+    <label for="cep">Digite o CEP: <br></label><br>
+    <input type="text" id="cep" placeholder="Insira seu CEP:" required><br><br>
+    <label for="local">Digite a latitude e longitude para saber a previsão: <br><br></label>
+ <div id="localizacao">
+    <input type="text" id="latitude" placeholder="Latitude">
+    <input type="text" id="longitude" placeholder="Longitude">
+  </div>
+  <button type="button"  onclick="getAdressByCep()"  style="cursor: pointer;">Acessar</button>
+  </form>
+  
+</div>
+
+<div id="resulcep">
+    <div id="titulocep">
+      <h1> Resultado da busca por CEP:</h1>
+      <img src="./cep.svg" alt="" >
+    </div>
+</div>
+
+
+    <div id="retornoTitulo">
+        <ul>
+          <li>Logradouro/nome</li>
+          <li>Bairro/Distrito</li>
+          <li>Localidade/UF</li>
+        </ul>
+    </div>
+
+ <div id="retornoapi">
+       <div class="inputretorno">
+        <input type="text" id="rua" disabled="disabled" >
+      </div>
+     <div class="inputretorno">
+         <input type="text" id="bairro" disabled="disabled">
+     </div>
+      <div >
+        <input type="text" id="cidade"  disabled="disabled">
+      </div>
+     
+</div>
+
+<div id="resultemp">
+  <div id="titulopre">
+      <h1>Previsão do tempo na região:</h1>
+  </div>
+  <div><img src="./imgtempo.svg"  ></div>
+  
+</div>
+
+<div id="resultadotempoTitulo">
+    <div id="resulttempo">
+      <h2>
+        Previsão de tempo de acordo com a região:
+      </h2>
+     
+    </div>
+    <div id="temperature_2m">
+        
+    </div>
+
+    
+</div>
+
+<footer>
+    <h3>
+      <ul>
+        <li>Termos de Uso  </li>
+        <li>|</li>
+        <li>Política de Privacidade</li>
+      </ul>
+
+    </h3>
+</footer>
+
+<script>
+  async function getAdressByCep(){ //ativando aync await
+   const cep = document.getElementById('cep').value; // variavel que pega as informção do cep do campo formulario
+   const lat = document.getElementById("latitude").value;
+   const long = document.getElementById("longitude").value;
+   try { // strutura do try cat
+    const resposta = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m`);
+    const data1  = await resposta.json(); 
+    const response = await fetch( `https://viacep.com.br/ws/${cep}/json/`); //variavel criada para retorno dos dado da consulta do cep
+    const data = await response.json(); //varibvel para criar promisse , espera 
+    
+    console.log(data)
+    console.log(data1)
+    document.getElementById('rua').value = data.logradouro //pegando os camp que vem da api e jogando dentro dos campos do formulario
+    document.getElementById('bairro').value = data.bairro
+    document.getElementById('cidade').value = data.localidade
+    document.getElementById('temperature_2m').innerHTML +=`<div>${data1.hourly.temperature_2m[0]} ºC </div>`;
+    
+    
+  } catch (error) {
+    alert("Verifique os dados");
+   }
+    
+   
+
+  }
+  
+
+ </script>
+</body>
+</html>
